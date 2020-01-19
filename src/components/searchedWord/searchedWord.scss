@@ -1,0 +1,31 @@
+.search-word-container {
+  display: flex;
+  margin-bottom: 30px;
+  padding: 0 25px;
+  justify-content: center;
+  flex-wrap: wrap;
+  .search-word-key {
+    position: relative;
+    width: 55px;
+    height: 70px;
+    background: #E5E5E5;
+    border-radius: 8px;
+    margin-right: 25px;
+    margin-bottom: 15px;
+
+    &.space-key {
+      height: 2px;
+      align-self: flex-end;
+      &.search-word-letter {
+        display: none;
+      }
+    }
+
+    .search-word-letter {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translateY(-50%) translateX(-50%);
+    }
+  }
+}
