@@ -293,7 +293,7 @@ export default class Container extends Component {
     this.restartGame = this.restartGame.bind(this);
     this.generateBuzzer = this.generateBuzzer.bind(this);
     this.handleCloseDialog = this.handleCloseDialog.bind(this);
-    
+    this.initAnimation = this.initAnimation.bind(this);
   }
 
   componentDidMount() {
@@ -391,6 +391,8 @@ export default class Container extends Component {
       }))
     }));
     this.setState({ wordList, currentWord: wordList[1] });
+
+    this.initAnimation();
   }
 
   handleKeyboardTrigger(key) {
@@ -486,6 +488,17 @@ export default class Container extends Component {
     this.setState({ openDialog: false });
   }
 
+  initAnimation() {
+    const bouncerElem = document.getElementById('bouncer').classList;
+    const travelerElem = document.getElementById('traveler').classList;
+    bouncerElem.add('move');
+    setTimeout(() => {
+      bouncerElem.remove('move');
+      travelerElem.add('iddle');
+      bouncerElem.add('iddle');
+    }, 3500);
+  }
+
   render() {
     const {
       keyboard,
@@ -498,7 +511,14 @@ export default class Container extends Component {
     const buzzerArray = this.generateBuzzer();
     return (
       <div>
-        <h1>Qui veut perdre sa tête</h1>
+        <div className="animation">
+          <div id="stage">
+            <div id="traveler">
+              <div id="bouncer" />
+            </div>
+          </div>
+        </div>
+        {/* <h1>Qui veut perdre sa tête</h1>
         <Button onClick={this.restartGame} variant="contained" color="primary">
           Recommencer
         </Button>
@@ -538,7 +558,7 @@ export default class Container extends Component {
         {currentWord !== null &&(
           <SearchedWord letters={currentWord.letters} />
         )}
-        <Keyboard keyboard={keyboard} handleKeyboardTrigger={this.handleKeyboardTrigger}/>
+        <Keyboard keyboard={keyboard} handleKeyboardTrigger={this.handleKeyboardTrigger}/> */}
       </div>
     );
   }
