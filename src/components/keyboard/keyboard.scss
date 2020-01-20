@@ -1,16 +1,16 @@
 .keyboard {
-  width: 750px;
+  width: 75%;
+  max-width: 750px;
   display: block;
   margin: 15px auto;
   .keybord-row {
     display: flex;
-    justify-content: center;
     padding: 0 20px;
     &:first-child {
       padding: 0;
     }
     &:last-child {
-      padding:  0 160px;
+      padding:  0 15%;
     }
     .keyboard-key {
       cursor: pointer;
@@ -24,6 +24,13 @@
       border-radius: 5px;
       border: 2px solid white;
   
+      &:hover {
+        box-shadow: 4px 3px 6px rgba(0, 0, 0, 0.3);
+        &.error,
+        &.success {
+          box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.3);
+        }
+      }
       &:last-child {
         margin-right: 0;
       }
@@ -46,8 +53,14 @@
   }
 }
 
-body {
-  background: #5f2c82;  /* fallback for old browsers */
-  background: -webkit-linear-gradient(to right, #49a09d, #5f2c82);  /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to right, #49a09d, #5f2c82); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+@media screen and (max-width: 650px) {
+  .keyboard {
+    .keybord-row {
+      .keyboard-key {
+        width: 40px;
+        height: 30px;
+        margin-right: 5px;
+      }
+    }
+  }
 }

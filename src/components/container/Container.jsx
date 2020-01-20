@@ -16,138 +16,6 @@ export default class Container extends Component {
     super(props);
     this.state = {
       wordList: [],
-      initKeyboard: [
-        {
-          letter: 'A',
-          activated: false,
-          class: 'default'
-        },
-        {
-          letter: 'Z',
-          activated: false,
-          class: 'default'
-        },
-        {
-          letter: 'E',
-          activated: false,
-          class: 'default'
-        },
-        {
-          letter: 'R',
-          activated: false,
-          class: 'default'
-        },
-        {
-          letter: 'T',
-          activated: false,
-          class: 'default'
-        },
-        {
-          letter: 'Y',
-          activated: false,
-          class: 'default'
-        },
-        {
-          letter: 'U',
-          activated: false,
-          class: 'default'
-        },
-        {
-          letter: 'I',
-          activated: false,
-          class: 'default'
-        },
-        {
-          letter: 'O',
-          activated: false,
-          class: 'default'
-        },
-        {
-          letter: 'P',
-          activated: false,
-          class: 'default'
-        },
-        {
-          letter: 'Q',
-          activated: false,
-          class: 'default'
-        },
-        {
-          letter: 'S',
-          activated: false,
-          class: 'default'
-        },
-        {
-          letter: 'D',
-          activated: false,
-          class: 'default'
-        },
-        {
-          letter: 'F',
-          activated: false,
-          class: 'default'
-        },
-        {
-          letter: 'G',
-          activated: false,
-          class: 'default'
-        },
-        {
-          letter: 'H',
-          activated: false,
-          class: 'default'
-        },
-        {
-          letter: 'J',
-          activated: false,
-          class: 'default'
-        },
-        {
-          letter: 'K',
-          activated: false,
-          class: 'default'
-        },
-        {
-          letter: 'L',
-          activated: false,
-          class: 'default'
-        },
-        {
-          letter: 'M',
-          activated: false,
-          class: 'default'
-        },
-        {
-          letter: 'W',
-          activated: false,
-          class: 'default'
-        },
-        {
-          letter: 'X',
-          activated: false,
-          class: 'default'
-        },
-        {
-          letter: 'C',
-          activated: false,
-          class: 'default'
-        },
-        {
-          letter: 'V',
-          activated: false,
-          class: 'default'
-        },
-        {
-          letter: 'B',
-          activated: false,
-          class: 'default'
-        },
-        {
-          letter: 'N',
-          activated: false,
-          class: 'default'
-        }
-      ],
       keyboard: [
         {
           letter: 'A',
@@ -280,10 +148,60 @@ export default class Container extends Component {
           class: 'default'
         }
       ],
+      dialogs: {
+        win: [
+          {
+            text: 'C\'est très bien continue comme ça ',
+            active: false,
+            winStrike: 1
+          },
+          {
+            text: 'Encore trouvé tu serais pas en train de tricher par hassard',
+            active: false,
+            winStrike: 2
+          },
+          {
+            text: 'Bon ça suffit ferme moi ce debugger',
+            active: false,
+            winStrike: 3
+          }
+        ],
+        lose: [
+          {
+            text: 'Ça peut arriver à tout le monde j’ai confiance en toi',
+            active: false,
+            loseStrike: 1
+          },
+          {
+            text: 'Attention ça fait deux erreur d\'affilé',
+            active: false,
+            loseStrike: 2
+          },
+          {
+            text: 'Ah mince j’ai du oublié de te dire les règles... le but du jeu est de trouver un mot, pas saisir des lettre au hasard',
+            active: false,
+            loseStrike: 3
+          }
+        ],
+        winAfterLose: {
+          text: 'Ah ben tu vois quand tu veux',
+          active: false
+        },
+        loseAfterWin: {
+          text: 'Huuum laisse moi regarder... non pas cette fois',
+          active: false
+        },
+        lastChance: {
+          text: 'Bon je ne voudrais te stresser ou quoi que ce soit mais il ne te reste qu\'une change',
+          active: false
+        },
+      },
+      currentDialog:'',
       winStrike: 0,
       loseStrike: 0,
+      inputFailed: 0,
       currentWord: null,
-      openDialog: false,
+      openPopup: false,
       endGameTitle: '',
       endGameContent: ''
     };
@@ -292,11 +210,15 @@ export default class Container extends Component {
     this.gameLose = this.gameLose.bind(this);
     this.restartGame = this.restartGame.bind(this);
     this.generateBuzzer = this.generateBuzzer.bind(this);
-    this.handleCloseDialog = this.handleCloseDialog.bind(this);
     this.initAnimation = this.initAnimation.bind(this);
+    this.displayDialog = this.displayDialog.bind(this); 
+    this.handleUpdateKeyboard = this.handleUpdateKeyboard.bind(this); 
+    this.handleUpdateSearchedWord = this.handleUpdateSearchedWord.bind(this); 
   }
 
   componentDidMount() {
+    this.initAnimation();
+
     const response = [
       {
         word: 'Big Data',
@@ -392,55 +314,68 @@ export default class Container extends Component {
     }));
     this.setState({ wordList, currentWord: wordList[1] });
 
-    this.initAnimation();
   }
 
   handleKeyboardTrigger(key) {
-    const { currentWord, loseStrike, keyboard } = this.state;
-    let keyClass = 'default';
+    const { currentWord, inputFailed } = this.state;
     if (!key.activated) {
-      const inputError = typeof _.find(currentWord.letters, {letter: key.letter}) === 'undefined';
-      if (inputError && loseStrike === 5) {
+      const inputError = typeof _.find(currentWord.letters, { letter: key.letter }) === 'undefined';
+      // test if game is lost
+      if (inputError && inputFailed === 5) {
         this.gameLose();
       } else {
-        // Assign error or success class to keyboard
-        keyClass = inputError ? 'error' : 'success';
-        const keyboardUpdated = _.map(keyboard, keyboardKey => {
-          if (keyboardKey.letter === key.letter) {
-            return {
-              letter: key.letter,
-              class: keyClass,
-              activated: true
-            }
-          }
-          return keyboardKey;
-        })
-        this.setState({keyboard: keyboardUpdated});
-        if (inputError) {
-          this.setState({ loseStrike: loseStrike + 1 });
-        } else {
-          const currentWordUpdated = _.assign({}, currentWord);
-          currentWordUpdated.letters = _.map(currentWord.letters, letter => {
-            if (letter.letter === key.letter) {
-              return {
-                ...letter,
-                isActive: true
-              }
-            }
-            return letter;
-          });
-          this.setState({
-            currentWord: currentWordUpdated
-          }, () => {
-            if (typeof _.countBy(currentWordUpdated.letters, 'isActive').false === 'undefined') {
-              this.gameWin();
-            }
-          });
-          // display letter
-        }
+        this.handleUpdateKeyboard(inputError, key);
+        this.handleUpdateSearchedWord(inputError, key);
       }
     } else {
       // tu as déja cliquer sur cette lettre      
+    }
+  }
+
+  handleUpdateKeyboard (inputError, key) {
+    const { keyboard } = this.state;
+    const keyClass = inputError ? 'error' : 'success';
+    const keyboardUpdated = _.map(keyboard, keyboardKey => {
+      if (keyboardKey.letter === key.letter) {
+        return {
+          letter: key.letter,
+          class: keyClass,
+          activated: true
+        }
+      }
+      return keyboardKey;
+    });
+    this.setState({keyboard: keyboardUpdated});
+  }
+
+  handleUpdateSearchedWord (inputError, key) {
+    const { currentWord } = this.state;
+    if (inputError) {
+      this.setState(prevState => (
+        {
+          inputFailed: prevState.inputFailed + 1
+        }
+      ),() => this.displayDialog(inputError));
+    } else {
+      const currentWordUpdated = _.assign({}, currentWord);
+      currentWordUpdated.letters = _.map(currentWord.letters, item => {
+        if (item.letter === key.letter) {
+          return {
+            ...item,
+            isActive: true
+          }
+        }
+        return item;
+      });
+      this.setState(prevState => ({
+        currentWord: currentWordUpdated
+      }), () => {
+        if (typeof _.countBy(currentWordUpdated.letters, 'isActive').false === 'undefined') {
+          this.gameWin();
+        } else {
+          this.displayDialog(inputError);
+        }
+      });
     }
   }
 
@@ -449,7 +384,7 @@ export default class Container extends Component {
     const wordListUpdate = _.reject(wordList, { word: currentWord.word });
     this.setState({
       wordList: wordListUpdate,
-      openDialog: true,
+      openPopup: true,
       endGameTitle: 'Bravo tu a gagné',
       endGameContent: `Le mot était effectivement ${currentWord.word}`
     });
@@ -458,34 +393,210 @@ export default class Container extends Component {
   gameLose() {
     const { currentWord } = this.state;
     this.setState({
-      openDialog: true,
+      openPopup: true,
       endGameTitle: 'Dommage ce sera pour une prochaine fois',
       endGameContent: `Le mot était ${currentWord.word}`
     });
   }
 
   restartGame() {
-    const { wordList,initKeyboard } = this.state;
+    const { wordList } = this.state;
     this.setState({
       currentWord: wordList[_.random(0, wordList.length -1)],
-      loseStrike: 0,
+      inputFailed: 0,
       winStrike: 0,
-      keyboard: initKeyboard,
-      openDialog: false
+      keyboard: [
+        {
+          letter: 'A',
+          activated: false,
+          class: 'default'
+        },
+        {
+          letter: 'Z',
+          activated: false,
+          class: 'default'
+        },
+        {
+          letter: 'E',
+          activated: false,
+          class: 'default'
+        },
+        {
+          letter: 'R',
+          activated: false,
+          class: 'default'
+        },
+        {
+          letter: 'T',
+          activated: false,
+          class: 'default'
+        },
+        {
+          letter: 'Y',
+          activated: false,
+          class: 'default'
+        },
+        {
+          letter: 'U',
+          activated: false,
+          class: 'default'
+        },
+        {
+          letter: 'I',
+          activated: false,
+          class: 'default'
+        },
+        {
+          letter: 'O',
+          activated: false,
+          class: 'default'
+        },
+        {
+          letter: 'P',
+          activated: false,
+          class: 'default'
+        },
+        {
+          letter: 'Q',
+          activated: false,
+          class: 'default'
+        },
+        {
+          letter: 'S',
+          activated: false,
+          class: 'default'
+        },
+        {
+          letter: 'D',
+          activated: false,
+          class: 'default'
+        },
+        {
+          letter: 'F',
+          activated: false,
+          class: 'default'
+        },
+        {
+          letter: 'G',
+          activated: false,
+          class: 'default'
+        },
+        {
+          letter: 'H',
+          activated: false,
+          class: 'default'
+        },
+        {
+          letter: 'J',
+          activated: false,
+          class: 'default'
+        },
+        {
+          letter: 'K',
+          activated: false,
+          class: 'default'
+        },
+        {
+          letter: 'L',
+          activated: false,
+          class: 'default'
+        },
+        {
+          letter: 'M',
+          activated: false,
+          class: 'default'
+        },
+        {
+          letter: 'W',
+          activated: false,
+          class: 'default'
+        },
+        {
+          letter: 'X',
+          activated: false,
+          class: 'default'
+        },
+        {
+          letter: 'C',
+          activated: false,
+          class: 'default'
+        },
+        {
+          letter: 'V',
+          activated: false,
+          class: 'default'
+        },
+        {
+          letter: 'B',
+          activated: false,
+          class: 'default'
+        },
+        {
+          letter: 'N',
+          activated: false,
+          class: 'default'
+        }
+      ],
+      dialogs: {
+        win: [
+          {
+            text: 'C\'est très bien continue comme ça ',
+            active: false,
+            winStrike: 1
+          },
+          {
+            text: 'Encore trouvé tu serais pas en train de tricher par hassard',
+            active: false,
+            winStrike: 2
+          },
+          {
+            text: 'Bon ça suffit ferme moi ce debugger',
+            active: false,
+            winStrike: 3
+          }
+        ],
+        lose: [
+          {
+            text: 'Ça peut arriver à tout le monde j’ai confiance en toi',
+            active: false,
+            loseStrike: 1
+          },
+          {
+            text: 'Attention ça fait deux erreur d\'affilé',
+            active: false,
+            loseStrike: 2
+          },
+          {
+            text: 'Ah mince j’ai du oublié de te dire les règles... le but du jeu est de trouver un mot, pas saisir des lettre au hasard',
+            active: false,
+            loseStrike: 3
+          }
+        ],
+        winAfterLose: {
+          text: 'Ah ben tu vois quand tu veux',
+          active: false
+        },
+        loseAfterWin: {
+          text: 'Huuum laisse moi regarder... non pas cette fois',
+          active: false
+        },
+        lastChance: {
+          text: 'Bon je ne voudrais te stresser ou quoi que ce soit mais il ne te reste qu\'une change',
+          active: false
+        },
+      },
+      openPopup: false,
+      currentDialog: ''
     });
   }
 
   generateBuzzer() {
-    const { loseStrike } = this.state;
+    const { inputFailed } = this.state;
     const buzzerArray = []
     for (let i = 0; i < 6; i++) {
-      buzzerArray.push(<Buzzer isActive={i< loseStrike} key={`buzzer-key-${i}`} />);
+      buzzerArray.push(<Buzzer isActive={i< inputFailed} key={`buzzer-key-${i}`} />);
     }
     return buzzerArray;
-  }
-
-  handleCloseDialog() {
-    this.setState({ openDialog: false });
   }
 
   initAnimation() {
@@ -494,39 +605,100 @@ export default class Container extends Component {
     bouncerElem.add('move');
     setTimeout(() => {
       bouncerElem.remove('move');
-      travelerElem.add('iddle');
-      bouncerElem.add('iddle');
+      travelerElem.add('position-center');
+      //bouncerElem.add('iddle');
     }, 3500);
+  }
+
+  displayDialog(inputError) {
+    const { dialogs, winStrike, loseStrike, inputFailed } = this.state;
+    const dialogsUpdated = _.assign({}, dialogs);
+    let currentDialog = '';
+    this.setState({ currentDialog }, () => {
+      if (inputError) {
+        if (inputFailed === 5 && !dialogsUpdated.lastChance.active) {
+          currentDialog = dialogsUpdated.lastChance.text;
+          dialogsUpdated.lastChance.active = true;
+        } else {
+          const loseDialog = dialogsUpdated.lose[loseStrike];
+          if (loseStrike === 0 && winStrike !== 0 && !dialogsUpdated.loseAfterWin.active) {
+            currentDialog = dialogsUpdated.loseAfterWin.text;
+            dialogsUpdated.loseAfterWin.active = true;
+          } else if (typeof loseDialog !== 'undefined' &&  !loseDialog.active) {
+            dialogsUpdated.lose[loseStrike].active = true;
+            currentDialog = loseDialog.text;
+          }
+        }
+        this.setState({
+          currentDialog,
+          dialogs: dialogsUpdated,
+          loseStrike: loseStrike + 1,
+          winStrike: 0
+        }, () => {
+            const dialogBox = document.getElementsByClassName('game-dialog')[0];
+            if (currentDialog !== '') {
+              dialogBox.classList.add('open');
+              setTimeout(() => {
+                dialogBox.classList.remove('open');
+                dialogBox.classList.add('close');
+              }, 10000);
+            }
+        });
+      } else {
+        const winDialog = dialogsUpdated.win[winStrike];
+        if (winStrike === 0 && loseStrike !== 0 && !dialogsUpdated.winAfterLose.active) {
+          currentDialog = dialogsUpdated.winAfterLose.text;
+          dialogsUpdated.winAfterLose.active = true;
+        } else if (typeof winDialog !== 'undefined' && !winDialog.active) {
+          dialogsUpdated.win[winStrike].active = true;
+          currentDialog = winDialog.text;
+        }
+        this.setState({
+          currentDialog,
+          dialogs: dialogsUpdated,
+          winStrike: winStrike + 1,
+          loseStrike: 0
+        }, () => {
+          const dialogBox = document.getElementsByClassName('game-dialog')[0];
+          if (currentDialog !== '') {
+            dialogBox.classList.add('open');
+          }
+      });
+      }
+    });
   }
 
   render() {
     const {
       keyboard,
-      winStrike,
       currentWord,
-      openDialog,
+      openPopup,
       endGameTitle,
-      endGameContent
+      endGameContent,
+      currentDialog
     } = this.state;
     const buzzerArray = this.generateBuzzer();
     return (
       <div>
+        <h1 className="game-title">Qui veut perdre sa tête</h1>
         <div className="animation">
           <div id="stage">
             <div id="traveler">
               <div id="bouncer" />
             </div>
           </div>
+          {currentDialog !== "" && (
+            <div className="game-dialog">{currentDialog}</div>
+          )}
         </div>
-        {/* <h1>Qui veut perdre sa tête</h1>
         <Button onClick={this.restartGame} variant="contained" color="primary">
           Recommencer
         </Button>
         {currentWord !== null &&(
           <Dialog
-          open={openDialog}
-          onClose={this.handleCloseDialog}
-          aria-labelledby="end-game-status"
+            open={openPopup}
+            onClose={this.restartGame}
+            aria-labelledby="end-game-status"
           >
             <DialogTitle id="end-game-status">
             {endGameTitle}
@@ -542,23 +714,19 @@ export default class Container extends Component {
               </DialogContentText>
             </DialogContent>
             <DialogActions>
-              <Button autoFocus onClick={this.handleCloseDialog} color="primary">
-                Fermer
-              </Button>
               <Button onClick={this.restartGame} color="primary">
                 Nouvelle partie
               </Button>
             </DialogActions>
           </Dialog>
         )}
-        <h3>{winStrike}</h3>
         <div className="buzzer-container">
           {buzzerArray}
         </div>
         {currentWord !== null &&(
           <SearchedWord letters={currentWord.letters} />
         )}
-        <Keyboard keyboard={keyboard} handleKeyboardTrigger={this.handleKeyboardTrigger}/> */}
+        <Keyboard keyboard={keyboard} handleKeyboardTrigger={this.handleKeyboardTrigger}/>
       </div>
     );
   }
