@@ -316,15 +316,15 @@ export default class Container extends Component {
     }));
     this.setState({ wordList, currentWord: wordList[_.random(0, wordList.length - 1)] });
 
-    const url = 'https://technical-exercice-stack-labs.s3.eu-west-3.amazonaws.com/hangman/technos/list';
-    fetch(url, {
-      method: 'GET',
-      mode: 'no-cors',
-      credentials: 'omit'
-    })
-      .then(res => res.json())
-      .then(res => console.log(res))
-      .catch(error => console.log(error));
+    // const url = 'https://technical-exercice-stack-labs.s3.eu-west-3.amazonaws.com/hangman/technos/list';
+    // fetch(url, {
+    //   method: 'GET',
+    //   mode: 'no-cors',
+    //   credentials: 'omit'
+    // })
+    //   .then(res => res.json())
+    //   .then(res => console.log(res))
+    //   .catch(error => console.log(error));
   }
 
   initAnimation() {
