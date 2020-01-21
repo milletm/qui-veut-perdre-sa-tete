@@ -321,7 +321,7 @@ export default class Container extends Component {
         isActive: letter === ' '
       }))
     }));
-    this.setState({ wordList, currentWord: wordList[7] }, () => this.displayFinalPopup('win'));
+    this.setState({ wordList, currentWord: wordList[_.random(0, wordList.length - 1)] });
 
   }
 
@@ -603,10 +603,11 @@ export default class Container extends Component {
     return buzzerArray;
   }
 
-
   displayDialog(inputError) {
     const { dialogs, winStrike, loseStrike, inputFailed } = this.state;
     const dialogsUpdated = _.assign({}, dialogs);
+    const winStrikeUpdated = inputError ? 0 : winStrike +1;
+    const loseStrikeUpdated = inputError ? loseStrike +1 : 0;
     let currentDialog = '';
     this.setState({ currentDialog }, () => {
       if (inputError) {
@@ -623,21 +624,6 @@ export default class Container extends Component {
             currentDialog = loseDialog.text;
           }
         }
-        this.setState({
-          currentDialog,
-          dialogs: dialogsUpdated,
-          loseStrike: loseStrike + 1,
-          winStrike: 0
-        }, () => {
-            const dialogBox = document.getElementsByClassName('game-dialog')[0];
-            if (currentDialog !== '') {
-              dialogBox.classList.add('open');
-              setTimeout(() => {
-                dialogBox.classList.remove('open');
-                dialogBox.classList.add('close');
-              }, 10000);
-            }
-        });
       } else {
         const winDialog = dialogsUpdated.win[winStrike];
         if (winStrike === 0 && loseStrike !== 0 && !dialogsUpdated.winAfterLose.active) {
@@ -647,18 +633,18 @@ export default class Container extends Component {
           dialogsUpdated.win[winStrike].active = true;
           currentDialog = winDialog.text;
         }
-        this.setState({
-          currentDialog,
-          dialogs: dialogsUpdated,
-          winStrike: winStrike + 1,
-          loseStrike: 0
-        }, () => {
-          const dialogBox = document.getElementsByClassName('game-dialog')[0];
-          if (currentDialog !== '') {
-            dialogBox.classList.add('open');
-          }
-      });
       }
+      this.setState({
+        currentDialog,
+        dialogs: dialogsUpdated,
+        winStrike: winStrikeUpdated,
+        loseStrike: loseStrikeUpdated
+      }, () => {
+        const dialogBox = document.getElementsByClassName('game-dialog')[0];
+        if (currentDialog !== '') {
+          dialogBox.classList.add('open');
+        }
+      });
     });
   }
 
