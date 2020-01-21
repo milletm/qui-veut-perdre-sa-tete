@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types'
 import './keyboard.scss';
 import KeyboardKey from "./KeyboardKey";
-import PropTypes from 'prop-types'
 
 class Keyboard extends Component {
   constructor(props) {
@@ -14,7 +14,7 @@ class Keyboard extends Component {
   generateKey(start, end) {
     const { keyboard, handleKeyboardTrigger } = this.props;
     const keyboardRow = []
-    for (let i = start; i < end; i++) {
+    for (let i = start; i < end; i+=1) {
       keyboardRow.push(<KeyboardKey key={`keyboard-key-${keyboard[i].letter}`} keyboardKey={keyboard[i]} handleKeyboardTrigger={handleKeyboardTrigger} />);
     }
     return keyboardRow;

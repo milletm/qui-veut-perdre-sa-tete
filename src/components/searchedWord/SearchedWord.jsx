@@ -1,8 +1,8 @@
 import React from 'react';
 import './searchedWord.scss';
 import _ from 'lodash';
-import SearchedWordKey from './SearchedWordKey';
 import PropTypes, { arrayOf } from 'prop-types'
+import SearchedWordKey from './SearchedWordKey';
 
 const SearchedWord = ({ letters }) => {
   return (

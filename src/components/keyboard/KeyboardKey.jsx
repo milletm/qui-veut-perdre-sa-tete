@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+
 const KeyboardKey = ({ keyboardKey, handleKeyboardTrigger }) => {
   return (
     <div className={`keyboard-key ${keyboardKey.class}`} onClick={() => handleKeyboardTrigger(keyboardKey)}>

@@ -1,17 +1,28 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import './container.scss';
-import Keyboard from "../keyboard/Keyboard";
-import SearchedWord from "../searchedWord/SearchedWord";
-import Buzzer from "../buzzer/Buzzer";
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Keyboard from "../keyboard/Keyboard";
+import SearchedWord from "../searchedWord/SearchedWord";
+import Buzzer from "../buzzer/Buzzer";
 
 export default class Container extends Component {
+  static initAnimation() {
+    const bouncerElem = document.getElementById('bouncer').classList;
+    const travelerElem = document.getElementById('traveler').classList;
+    bouncerElem.add('move');
+    setTimeout(() => {
+      bouncerElem.remove('move');
+      travelerElem.add('position-center');
+      //bouncerElem.add('iddle');
+    }, 3500);
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -206,18 +217,16 @@ export default class Container extends Component {
       endGameContent: ''
     };
     this.handleKeyboardTrigger = this.handleKeyboardTrigger.bind(this);
-    this.gameWin = this.gameWin.bind(this);
-    this.gameLose = this.gameLose.bind(this);
     this.restartGame = this.restartGame.bind(this);
     this.generateBuzzer = this.generateBuzzer.bind(this);
-    this.initAnimation = this.initAnimation.bind(this);
     this.displayDialog = this.displayDialog.bind(this); 
     this.handleUpdateKeyboard = this.handleUpdateKeyboard.bind(this); 
-    this.handleUpdateSearchedWord = this.handleUpdateSearchedWord.bind(this); 
+    this.handleUpdateSearchedWord = this.handleUpdateSearchedWord.bind(this);
+    this.displayFinalPopup = this.displayFinalPopup.bind(this); 
   }
 
   componentDidMount() {
-    this.initAnimation();
+    Container.initAnimation();
 
     const response = [
       {
@@ -312,7 +321,7 @@ export default class Container extends Component {
         isActive: letter === ' '
       }))
     }));
-    this.setState({ wordList, currentWord: wordList[1] });
+    this.setState({ wordList, currentWord: wordList[7] }, () => this.displayFinalPopup('win'));
 
   }
 
@@ -322,7 +331,7 @@ export default class Container extends Component {
       const inputError = typeof _.find(currentWord.letters, { letter: key.letter }) === 'undefined';
       // test if game is lost
       if (inputError && inputFailed === 5) {
-        this.gameLose();
+        this.displayFinalPopup('lose');
       } else {
         this.handleUpdateKeyboard(inputError, key);
         this.handleUpdateSearchedWord(inputError, key);
@@ -367,11 +376,11 @@ export default class Container extends Component {
         }
         return item;
       });
-      this.setState(prevState => ({
+      this.setState({
         currentWord: currentWordUpdated
-      }), () => {
+      }, () => {
         if (typeof _.countBy(currentWordUpdated.letters, 'isActive').false === 'undefined') {
-          this.gameWin();
+          this.displayFinalPopup('win');
         } else {
           this.displayDialog(inputError);
         }
@@ -379,24 +388,19 @@ export default class Container extends Component {
     }
   }
 
-  gameWin() {
+  displayFinalPopup(type) {
     const { currentWord, wordList } = this.state;
-    const wordListUpdate = _.reject(wordList, { word: currentWord.word });
+    if (type === 'win') {
+      const wordListUpdate = _.reject(wordList, { word: currentWord.word });
+      this.setState({
+        wordList: wordListUpdate
+      });
+    }
     this.setState({
-      wordList: wordListUpdate,
       openPopup: true,
-      endGameTitle: 'Bravo tu a gagné',
+      endGameTitle: type === 'win' ? 'Bravo tu a gagné' : 'Désolé ça sera pour une prochaine fois',
       endGameContent: `Le mot était effectivement ${currentWord.word}`
-    });
-  }
-
-  gameLose() {
-    const { currentWord } = this.state;
-    this.setState({
-      openPopup: true,
-      endGameTitle: 'Dommage ce sera pour une prochaine fois',
-      endGameContent: `Le mot était ${currentWord.word}`
-    });
+    });  
   }
 
   restartGame() {
@@ -593,22 +597,12 @@ export default class Container extends Component {
   generateBuzzer() {
     const { inputFailed } = this.state;
     const buzzerArray = []
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 6; i+=1) {
       buzzerArray.push(<Buzzer isActive={i< inputFailed} key={`buzzer-key-${i}`} />);
     }
     return buzzerArray;
   }
 
-  initAnimation() {
-    const bouncerElem = document.getElementById('bouncer').classList;
-    const travelerElem = document.getElementById('traveler').classList;
-    bouncerElem.add('move');
-    setTimeout(() => {
-      bouncerElem.remove('move');
-      travelerElem.add('position-center');
-      //bouncerElem.add('iddle');
-    }, 3500);
-  }
 
   displayDialog(inputError) {
     const { dialogs, winStrike, loseStrike, inputFailed } = this.state;
@@ -705,12 +699,15 @@ export default class Container extends Component {
             </DialogTitle>
             <DialogContent>
               <DialogContentText>
-                <React.Fragment>
+                <>
                   {endGameContent}
                   {typeof currentWord.image !== 'undefined' && currentWord.image !== "" && (
-                    <img className="dialog-image" src={currentWord.image} alt="word" />
+                    <img className="dialog-image" src={currentWord.image} alt="word"
+                      onError={() => {
+                        document.getElementsByClassName('dialog-image')[0].classList.add('hide');
+                    }} />
                   )}
-                </React.Fragment>
+                </>
               </DialogContentText>
             </DialogContent>
             <DialogActions>

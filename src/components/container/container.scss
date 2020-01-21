@@ -2,6 +2,9 @@ img.dialog-image {
   display: block;
   margin: 10px auto;
   max-width: 150px;
+  &.hide {
+    display: none;
+  }
 }
 .game-title {
   text-align: center;
@@ -14,3 +17,4 @@ body {
   background: -webkit-linear-gradient(to right, #49a09d, #5f2c82);  /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(to right, #49a09d, #5f2c82); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
+
