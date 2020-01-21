@@ -12,17 +12,6 @@ import SearchedWord from "../searchedWord/SearchedWord";
 import Buzzer from "../buzzer/Buzzer";
 
 export default class Container extends Component {
-  static initAnimation() {
-    const bouncerElem = document.getElementById('bouncer').classList;
-    const travelerElem = document.getElementById('traveler').classList;
-    bouncerElem.add('move');
-    setTimeout(() => {
-      bouncerElem.remove('move');
-      travelerElem.add('position-center');
-      //bouncerElem.add('iddle');
-    }, 3500);
-  }
-
   constructor(props) {
     super(props);
     this.state = {
@@ -189,7 +178,7 @@ export default class Container extends Component {
             loseStrike: 2
           },
           {
-            text: 'Ah mince j’ai dû oublier de te dire les règles... le but du jeu est de trouver un mot, ne pas saisir des lettres au hasard',
+            text: 'Ah mince j’ai dû oublier de te dire les règles... le but du jeu est de trouver un mot, pas de saisir des lettres au hasard',
             active: false,
             loseStrike: 3
           }
@@ -214,7 +203,8 @@ export default class Container extends Component {
       currentWord: null,
       openPopup: false,
       endGameTitle: '',
-      endGameContent: ''
+      endGameContent: '',
+      initComplete: false
     };
     this.handleKeyboardTrigger = this.handleKeyboardTrigger.bind(this);
     this.restartGame = this.restartGame.bind(this);
@@ -223,10 +213,11 @@ export default class Container extends Component {
     this.handleUpdateKeyboard = this.handleUpdateKeyboard.bind(this); 
     this.handleUpdateSearchedWord = this.handleUpdateSearchedWord.bind(this);
     this.displayFinalPopup = this.displayFinalPopup.bind(this); 
+    this.initAnimation = this.initAnimation.bind(this);
   }
 
   componentDidMount() {
-    Container.initAnimation();
+    this.initAnimation();
 
     const response = [
       {
@@ -325,6 +316,23 @@ export default class Container extends Component {
 
   }
 
+  initAnimation() {
+    const buddyElem = document.getElementById('buddy').classList;
+    const travelerElem = document.getElementById('traveler').classList;
+    buddyElem.add('move');
+    setTimeout(() => {
+      buddyElem.remove('move');
+      travelerElem.add('position-center');
+      this.setState({ currentDialog: 'Bienvenue sur qui veut perdre sa tête'}, () => {
+        document.getElementsByClassName('game-dialog')[0].classList.add('open');
+        setTimeout(() => {
+          //buddyElem.add('iddle');
+          this.setState({ currentDialog: 'Tu peux lancer une partie en cliquant sur le bouton juste en dessous' })
+        }, 3000);
+      });
+    }, 3500);
+  }
+
   handleKeyboardTrigger(key) {
     const { currentWord, inputFailed } = this.state;
     if (!key.activated) {
@@ -405,10 +413,13 @@ export default class Container extends Component {
 
   restartGame() {
     const { wordList } = this.state;
+
     this.setState({
+      initComplete: true,
       currentWord: wordList[_.random(0, wordList.length -1)],
       inputFailed: 0,
       winStrike: 0,
+      loseStrike: 0,
       keyboard: [
         {
           letter: 'A',
@@ -571,7 +582,7 @@ export default class Container extends Component {
             loseStrike: 2
           },
           {
-            text: 'Ah mince j’ai dû oublier de te dire les règles... le but du jeu est de trouver un mot, ne pas saisir des lettres au hasard',
+            text: 'Ah mince j’ai dû oublier de te dire les règles... le but du jeu est de trouver un mot, pas de saisir des lettres au hasard',
             active: false,
             loseStrike: 3
           }
@@ -655,63 +666,69 @@ export default class Container extends Component {
       openPopup,
       endGameTitle,
       endGameContent,
-      currentDialog
+      currentDialog,
+      initComplete
     } = this.state;
     const buzzerArray = this.generateBuzzer();
     return (
-      <div>
-        <h1 className="game-title">Qui veut perdre sa tête</h1>
-        <Button onClick={this.restartGame} variant="contained" color="primary" className="restart-game-button">
-            Recommencer
-          </Button>
-
+      <>
         <div className="animation">
           <div id="stage">
             <div id="traveler">
-              <div id="bouncer" />
+              <div id="buddy" />
             </div>
           </div>
           {currentDialog !== "" && (
             <div className="game-dialog">{currentDialog}</div>
           )}
         </div>
-        {currentWord !== null &&(
-          <Dialog
-            open={openPopup}
-            onClose={this.restartGame}
-            aria-labelledby="end-game-status"
-          >
-            <DialogTitle id="end-game-status">
-            {endGameTitle}
-            </DialogTitle>
-            <DialogContent>
-              <DialogContentText>
-                <>
-                  {endGameContent}
-                  {typeof currentWord.image !== 'undefined' && currentWord.image !== "" && (
-                    <img className="dialog-image" src={currentWord.image} alt="word"
-                      onError={() => {
-                        document.getElementsByClassName('dialog-image')[0].classList.add('hide');
-                    }} />
-                  )}
-                </>
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={this.restartGame} color="primary">
-                Nouvelle partie
+        <div className="header">
+          <h1 className="game-title">Qui veut perdre sa tête</h1>
+          <Button onClick={this.restartGame} variant="contained" color="primary" className="restart-game-button">
+            Nouvelle partie
               </Button>
-            </DialogActions>
-          </Dialog>
-        )}
-        <div className="buzzer-container">
-          {buzzerArray}
         </div>
-        {currentWord !== null &&(
-          <SearchedWord letters={currentWord.letters} />
+        {initComplete && (
+          <div className="game-board">
+            {currentWord !== null && (
+              <Dialog
+                open={openPopup}
+                onClose={this.restartGame}
+                aria-labelledby="end-game-status"
+              >
+                <DialogTitle id="end-game-status">
+                  {endGameTitle}
+                </DialogTitle>
+                <DialogContent>
+                  <DialogContentText>
+                    <>
+                      {endGameContent}
+                      {typeof currentWord.image !== 'undefined' && currentWord.image !== "" && (
+                        <img className="dialog-image" src={currentWord.image} alt="word"
+                          onError={() => {
+                            document.getElementsByClassName('dialog-image')[0].classList.add('hide');
+                          }} />
+                      )}
+                    </>
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={this.restartGame} color="primary">
+                    Nouvelle partie
+              </Button>
+                </DialogActions>
+              </Dialog>
+            )}
+            <div className="buzzer-container">
+              {buzzerArray}
+            </div>
+            {currentWord !== null && (
+              <SearchedWord letters={currentWord.letters} />
+            )}
+            <Keyboard keyboard={keyboard} handleKeyboardTrigger={this.handleKeyboardTrigger} />
+          </div>
         )}
-        <Keyboard keyboard={keyboard} handleKeyboardTrigger={this.handleKeyboardTrigger}/>
-      </div>
+      </>
     );
   }
 }

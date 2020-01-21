@@ -7,18 +7,17 @@ img.dialog-image {
   }
 }
 
-.game-title {
+.header {
   text-align: center;
-  margin-bottom: 10px;
+
+  .game-title {
+    font-family: 'Balonku';
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 35px;
+  }
 }
 
-.restart-game-button {
-  margin: 0 auto;
+.game-board {
+  margin-top: 25px;
 }
-
-body {
-  background: #5f2c82;  /* fallback for old browsers */
-  background: -webkit-linear-gradient(to right, #49a09d, #5f2c82);  /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to right, #49a09d, #5f2c82); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-}
-

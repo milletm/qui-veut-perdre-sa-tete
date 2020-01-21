@@ -1,3 +1,42 @@
+@font-face {
+  font-family: 'Balonku';
+  src: local('Balonku'),
+  url('./resssources/fonts/BalonkuRegular-la1w.otf');
+}
+
+//Background
+.bg {
+  animation: slide 3s ease-in-out infinite alternate;
+  background-image: linear-gradient(-60deg, #6c3 50%, #09f 50%);
+  bottom: 0;
+  left: -50%;
+  opacity: .5;
+  position: fixed;
+  right: -50%;
+  top: 0;
+  z-index: -1;
+}
+
+.bg2 {
+  animation-direction: alternate-reverse;
+  animation-duration: 4s;
+}
+
+.bg3 {
+  animation-duration: 5s;
+}
+
+@keyframes slide {
+  0% {
+    transform: translateX(-25%);
+  }
+
+  100% {
+    transform: translateX(25%);
+  }
+}
+
+
 
 @keyframes travel {
   from {
@@ -56,11 +95,11 @@
 }
 
 .animation {
-  padding: 25px;
   position: relative;
+  margin-bottom: 50px;
   #stage {
     position: relative;
-    width: 50%;
+    width: calc(50% - 25px);
     height: 50px;
   }
 
@@ -78,16 +117,16 @@
     }
   }
 
-  #bouncer {
+  #buddy {
     position: absolute;
     bottom: 0;
     left: 0;
     width: 50px;
     height: 50px;
     border-radius: 25px;
-    background: #11998e;
+    background: #bdeaee;
     /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #38ef7d, #11998e);
+    background: linear-gradient(to right, #bdeaee, #76b4bd);
     /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
 
@@ -126,7 +165,7 @@
       &:after {
         animation-name: roleEyes;
         animation-duration: 2s;
-        animation-iteration-count: infinite;
+        animation-iteration-count: 1;
         animation-direction: alternate;
       }
     }
@@ -136,14 +175,13 @@
     position: absolute;
     transform-origin: 0% 100%;
     text-align: center;
-    background-color: #aa2929;
+    background-color: #4279a3;
     color: white;
     border-radius: 10px;
-    width: auto;
-    max-width: 250px;
+    width: 160px;
     padding: 10px;
     left: calc(50% + 50px);
-    top: -50px;
+    top: 5px;
     transform: scale(0);
     animation-fill-mode: forwards;
 
@@ -152,12 +190,12 @@
       display: block;
       width: 0;
       position: absolute;
-      bottom: -25px;
-      left: 5px;
+      top: 15px;
+      left: -22px;
       border-style: solid;
       border-width: 15px;
-      border-color: #aa2929 transparent transparent #aa2929;
-      transform: rotate(10deg);
+      border-color: #4279a3 transparent transparent #4279a3;
+      transform: rotate(90deg);
     }
 
     &.open {
