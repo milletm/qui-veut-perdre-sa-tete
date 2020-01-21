@@ -395,9 +395,9 @@ export default class Container extends Component {
     }
   }
 
-  displayFinalPopup(type) {
+  displayFinalPopup(endGameType) {
     const { currentWord, wordList } = this.state;
-    if (type === 'win') {
+    if (endGameType === 'win') {
       const wordListUpdate = _.reject(wordList, { word: currentWord.word });
       this.setState({
         wordList: wordListUpdate
@@ -405,8 +405,8 @@ export default class Container extends Component {
     }
     this.setState({
       openPopup: true,
-      endGameTitle: type === 'win' ? 'Bravo tu as gagné' : 'Désolé ça sera pour une prochaine fois',
-      endGameContent: type === 'win' ? `Le mot était effectivement ${currentWord.word}` : `Le mot que tu devais trouver était ${currentWord.word}`
+      endGameTitle: endGameType === 'win' ? 'Bravo tu as gagné' : 'Désolé ça sera pour une prochaine fois',
+      endGameContent: endGameType === 'win' ? `Le mot était effectivement ${currentWord.word}` : `Le mot que tu devais trouver était ${currentWord.word}`
     });  
   }
 
