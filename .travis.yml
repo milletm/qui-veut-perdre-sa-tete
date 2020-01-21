@@ -4,7 +4,7 @@ node_js:
   - "stable"
 cache: npm
 script:
-  - npm run build
+  - npm run deploy
 
 deploy:
   provider: pages
