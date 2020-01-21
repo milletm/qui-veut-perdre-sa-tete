@@ -162,17 +162,17 @@ export default class Container extends Component {
       dialogs: {
         win: [
           {
-            text: 'C\'est très bien continue comme ça ',
+            text: 'C\'est très bien continu comme ça ',
             active: false,
             winStrike: 1
           },
           {
-            text: 'Encore trouvé tu serais pas en train de tricher par hassard',
+            text: 'Encore trouvé tu ne serais pas en train de tricher par hasard',
             active: false,
             winStrike: 2
           },
           {
-            text: 'Bon ça suffit ferme moi ce debugger',
+            text: 'Bon ça suffit ferme moi ce débuggeur',
             active: false,
             winStrike: 3
           }
@@ -184,12 +184,12 @@ export default class Container extends Component {
             loseStrike: 1
           },
           {
-            text: 'Attention ça fait deux erreur d\'affilé',
+            text: 'Attention ça fait deux erreurs d`\'affilée',
             active: false,
             loseStrike: 2
           },
           {
-            text: 'Ah mince j’ai du oublié de te dire les règles... le but du jeu est de trouver un mot, pas saisir des lettre au hasard',
+            text: 'Ah mince j’ai dû oublier de te dire les règles... le but du jeu est de trouver un mot, ne pas saisir des lettres au hasard',
             active: false,
             loseStrike: 3
           }
@@ -199,13 +199,13 @@ export default class Container extends Component {
           active: false
         },
         loseAfterWin: {
-          text: 'Huuum laisse moi regarder... non pas cette fois',
+          text: 'Huuum laisse-moi regarder... non pas cette fois',
           active: false
         },
         lastChance: {
-          text: 'Bon je ne voudrais te stresser ou quoi que ce soit mais il ne te reste qu\'une change',
+          text: 'Bon je ne voudrais te stresser ou quoi que ce soit mais il ne te reste qu\'une chance',
           active: false
-        },
+        }
       },
       currentDialog:'',
       winStrike: 0,
@@ -398,7 +398,7 @@ export default class Container extends Component {
     }
     this.setState({
       openPopup: true,
-      endGameTitle: type === 'win' ? 'Bravo tu a gagné' : 'Désolé ça sera pour une prochaine fois',
+      endGameTitle: type === 'win' ? 'Bravo tu as gagné' : 'Désolé ça sera pour une prochaine fois',
       endGameContent: `Le mot était effectivement ${currentWord.word}`
     });  
   }
@@ -544,17 +544,17 @@ export default class Container extends Component {
       dialogs: {
         win: [
           {
-            text: 'C\'est très bien continue comme ça ',
+            text: 'C\'est très bien continu comme ça ',
             active: false,
             winStrike: 1
           },
           {
-            text: 'Encore trouvé tu serais pas en train de tricher par hassard',
+            text: 'Encore trouvé tu ne serais pas en train de tricher par hasard',
             active: false,
             winStrike: 2
           },
           {
-            text: 'Bon ça suffit ferme moi ce debugger',
+            text: 'Bon ça suffit ferme moi ce débuggeur',
             active: false,
             winStrike: 3
           }
@@ -566,12 +566,12 @@ export default class Container extends Component {
             loseStrike: 1
           },
           {
-            text: 'Attention ça fait deux erreur d\'affilé',
+            text: 'Attention ça fait deux erreurs d`\'affilée',
             active: false,
             loseStrike: 2
           },
           {
-            text: 'Ah mince j’ai du oublié de te dire les règles... le but du jeu est de trouver un mot, pas saisir des lettre au hasard',
+            text: 'Ah mince j’ai dû oublier de te dire les règles... le but du jeu est de trouver un mot, ne pas saisir des lettres au hasard',
             active: false,
             loseStrike: 3
           }
@@ -581,13 +581,13 @@ export default class Container extends Component {
           active: false
         },
         loseAfterWin: {
-          text: 'Huuum laisse moi regarder... non pas cette fois',
+          text: 'Huuum laisse-moi regarder... non pas cette fois',
           active: false
         },
         lastChance: {
-          text: 'Bon je ne voudrais te stresser ou quoi que ce soit mais il ne te reste qu\'une change',
+          text: 'Bon je ne voudrais te stresser ou quoi que ce soit mais il ne te reste qu\'une chance',
           active: false
-        },
+        }
       },
       openPopup: false,
       currentDialog: ''
