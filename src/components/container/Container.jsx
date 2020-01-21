@@ -399,7 +399,7 @@ export default class Container extends Component {
     this.setState({
       openPopup: true,
       endGameTitle: type === 'win' ? 'Bravo tu as gagné' : 'Désolé ça sera pour une prochaine fois',
-      endGameContent: `Le mot était effectivement ${currentWord.word}`
+      endGameContent: type === 'win' ? `Le mot était effectivement ${currentWord.word}` : `Le mot que tu devais trouver était ${currentWord.word}`
     });  
   }
 
@@ -661,6 +661,10 @@ export default class Container extends Component {
     return (
       <div>
         <h1 className="game-title">Qui veut perdre sa tête</h1>
+        <Button onClick={this.restartGame} variant="contained" color="primary" className="restart-game-button">
+            Recommencer
+          </Button>
+
         <div className="animation">
           <div id="stage">
             <div id="traveler">
@@ -671,9 +675,6 @@ export default class Container extends Component {
             <div className="game-dialog">{currentDialog}</div>
           )}
         </div>
-        <Button onClick={this.restartGame} variant="contained" color="primary">
-          Recommencer
-        </Button>
         {currentWord !== null &&(
           <Dialog
             open={openPopup}

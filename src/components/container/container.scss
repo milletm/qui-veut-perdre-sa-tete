@@ -6,11 +6,15 @@ img.dialog-image {
     display: none;
   }
 }
+
 .game-title {
   text-align: center;
   margin-bottom: 10px;
 }
 
+.restart-game-button {
+  margin: 0 auto;
+}
 
 body {
   background: #5f2c82;  /* fallback for old browsers */

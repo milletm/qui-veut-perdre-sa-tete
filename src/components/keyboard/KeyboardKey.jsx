@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 
 const KeyboardKey = ({ keyboardKey, handleKeyboardTrigger }) => {
   return (
-    <div className={`keyboard-key ${keyboardKey.class}`} onClick={() => handleKeyboardTrigger(keyboardKey)}>
+    <button type="button" className={`keyboard-key ${keyboardKey.class}`} onClick={() => handleKeyboardTrigger(keyboardKey)}>
       <span className="letter">{keyboardKey.letter}</span>
-    </div>
+    </button>
   )
 }
 
