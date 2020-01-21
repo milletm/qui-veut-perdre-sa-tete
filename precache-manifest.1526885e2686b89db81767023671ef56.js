@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "b2f2f3e8f38a1c74200d73e5af201f55",
+    "revision": "a781620f4b7b0c0adafbd6d32a6260b9",
     "url": "/qui-veut-perdre-sa-tete/index.html"
   },
   {
-    "revision": "d2f035a228cb44108996",
+    "revision": "0392b04280293d3819a3",
     "url": "/qui-veut-perdre-sa-tete/static/css/main.bf46a3c4.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/qui-veut-perdre-sa-tete/static/js/2.87cae2d8.chunk.js.LICENSE"
   },
   {
-    "revision": "d2f035a228cb44108996",
-    "url": "/qui-veut-perdre-sa-tete/static/js/main.96828a7e.chunk.js"
+    "revision": "0392b04280293d3819a3",
+    "url": "/qui-veut-perdre-sa-tete/static/js/main.1867be70.chunk.js"
   },
   {
     "revision": "a63cb08fab8db103e49d",

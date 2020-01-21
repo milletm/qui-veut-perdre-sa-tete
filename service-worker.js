@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/qui-veut-perdre-sa-tete/precache-manifest.6a4e385ac9de95b7625a317a7bf39f5a.js"
+  "/qui-veut-perdre-sa-tete/precache-manifest.1526885e2686b89db81767023671ef56.js"
 );
 
 self.addEventListener('message', (event) => {
