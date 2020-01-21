@@ -326,7 +326,6 @@ export default class Container extends Component {
       this.setState({ currentDialog: 'Bienvenue sur qui veut perdre sa tête'}, () => {
         document.getElementsByClassName('game-dialog')[0].classList.add('open');
         setTimeout(() => {
-          //buddyElem.add('iddle');
           this.setState({ currentDialog: 'Tu peux lancer une partie en cliquant sur le bouton juste en dessous' })
         }, 3000);
       });
@@ -412,8 +411,7 @@ export default class Container extends Component {
   }
 
   restartGame() {
-    const { wordList } = this.state;
-
+    const { wordList, initComplete } = this.state;
     this.setState({
       initComplete: true,
       currentWord: wordList[_.random(0, wordList.length -1)],
@@ -601,7 +599,7 @@ export default class Container extends Component {
         }
       },
       openPopup: false,
-      currentDialog: ''
+      currentDialog: initComplete ? '' : 'Tu dois trouver le mot caché en faisant moins de 6 erreurs sinon tu finiras comme moi'
     });
   }
 
